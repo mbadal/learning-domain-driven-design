@@ -11,13 +11,13 @@ $users = array_filter($usersArray, function ($item) use ($email) {
 });
 
 if (sizeof($users) !== 1) {
-    var_dump('Redirect to Login');
+    echo 'Redirect to Login';
     exit;
 }
 
 $user = $users[0];
 if (!password_verify($password, $user['password'])) {
-    var_dump('Invalid Password');
+    echo 'Invalid Password';
     exit;
 }
 
