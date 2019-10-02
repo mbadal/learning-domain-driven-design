@@ -11,13 +11,13 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     exit;
 }
 
-if ($password !== $passwordRepeat) {
-    echo 'Password do not match';
+if (strlen($password) < 4) {
+    echo 'Password should be at least 4 characters long';
     exit;
 }
 
-if (strlen($password) < 4) {
-    echo 'Password should be at least 4 characters long';
+if ($password !== $passwordRepeat) {
+    echo 'Password do not match';
     exit;
 }
 
