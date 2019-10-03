@@ -12,15 +12,15 @@ try {
     exit;
 }
 
+$passwordRepeat = $_POST['passwordRepeat'];
 try {
     $password       = PlainTextPassword::createFromString($_POST['password']);
-    $passwordRepeat = PlainTextPassword::createFromString($_POST['passwordRepeat']);
 } catch (InvalidArgumentException $e) {
     echo 'Password should be at least 4 characters long';
     exit;
 }
 
-if (!$password->isEqual($passwordRepeat)) {
+if (!$password->isEqualToString($passwordRepeat)) {
     echo 'Passwords do not match';
     exit;
 }

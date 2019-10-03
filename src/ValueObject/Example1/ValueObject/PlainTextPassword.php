@@ -31,12 +31,8 @@ class PlainTextPassword
         );
     }
 
-    public function isEqual(PlainTextPassword $plainTextPassword): bool
+    public function isEqualToString($plainTextPassword): bool
     {
-        $reflector = new ReflectionClass($plainTextPassword);
-        $property  = $reflector->getProperty('value');
-        $property->setAccessible(true);
-
-        return ($this->value === $property->getValue($plainTextPassword));
+        return ($this->value === $plainTextPassword);
     }
 }
