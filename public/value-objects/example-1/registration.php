@@ -1,23 +1,27 @@
 <?php declare(strict_types=1);
 
+use LearningDdd\ValueObject\EmailAddress;
+use LearningDdd\ValueObject\PlainTextPassword;
+
 require '../../../vendor/autoload.php';
 
-$email          = $_POST['email'];
-$password       = $_POST['password'];
-$passwordRepeat = $_POST['passwordRepeat'];
-
-if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+try {
+    $email = EmailAddress::createFromString($_POST['email']);
+} catch (InvalidArgumentException $e) {
     echo "String: [{$email}] is not a valid email address";
     exit;
 }
 
-if (strlen($password) < 4) {
+$passwordRepeat = $_POST['passwordRepeat'];
+try {
+    $password       = PlainTextPassword::createFromString($_POST['password']);
+} catch (InvalidArgumentException $e) {
     echo 'Password should be at least 4 characters long';
     exit;
 }
 
-if ($password !== $passwordRepeat) {
-    echo 'Password do not match';
+if (!$password->isEqualToString($passwordRepeat)) {
+    echo 'Passwords do not match';
     exit;
 }
 
@@ -25,7 +29,7 @@ $usersJson  = file_get_contents('../../../users.json');
 $usersArray = json_decode($usersJson, true);
 
 $users = array_filter($usersArray, function ($item) use ($email) {
-    return ($item['email'] === $email);
+    return ($item['email'] === $email->toString());
 });
 
 if (!empty($users)) {
@@ -35,8 +39,8 @@ if (!empty($users)) {
 
 $usersArray[] = [
     'id'       => count($usersArray) + 1,
-    'email'    => $email,
-    'password' => password_hash($password, PASSWORD_DEFAULT)
+    'email'    => $email->toString(),
+    'password' => $password->hash()->toString()
 ];
 file_put_contents('../../../users.json', json_encode($usersArray));
 echo "User with email: [{$email}] was registered successfully";
