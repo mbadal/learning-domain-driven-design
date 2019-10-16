@@ -4,16 +4,8 @@ namespace LearningDdd\ValueObject;
 
 use InvalidArgumentException;
 
-class PlainTextPassword
+class PlainTextPassword extends AbstractPassword
 {
-    /** @var string */
-    private $value;
-
-    public function __construct(string $value)
-    {
-        $this->value = $value;
-    }
-
     public static function createFromString(string $value): PlainTextPassword
     {
         if (strlen($value) < 4) {
@@ -26,17 +18,12 @@ class PlainTextPassword
     public function hash(): PasswordHash
     {
         return PasswordHash::createFromString(
-            password_hash($this->value, PASSWORD_DEFAULT)
+            password_hash($this->getValue(), PASSWORD_DEFAULT)
         );
     }
 
     public function isEqual(PlainTextPassword $plainTextPassword): bool
     {
-        return ($this->value === $plainTextPassword->getValue());
-    }
-
-    private function getValue(): string
-    {
-        return $this->value;
+        return ($this->getValue() === $plainTextPassword->getValue());
     }
 }

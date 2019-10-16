@@ -5,16 +5,8 @@ namespace LearningDdd\ValueObject;
 use InvalidArgumentException;
 use ReflectionClass;
 
-class PasswordHash
+class PasswordHash extends AbstractPassword
 {
-    /** @var string */
-    private $value;
-
-    private function __construct(string $value)
-    {
-        $this->value = $value;
-    }
-
     public static function createFromString(string $value): PasswordHash
     {
         if (strpos($value, '$2y$') !== 0) {
@@ -26,11 +18,7 @@ class PasswordHash
 
     public function verify(PlainTextPassword $plainTextPassword): bool
     {
-        $reflector = new ReflectionClass($plainTextPassword);
-        $property  = $reflector->getProperty('value');
-        $property->setAccessible(true);
-
-        return (password_verify($property->getValue($plainTextPassword), $this->value));
+        return (password_verify($plainTextPassword->getValue(), $this->getValue()));
     }
 
     public function toString(): string
@@ -40,6 +28,6 @@ class PasswordHash
 
     public function __toString()
     {
-        return $this->value;
+        return $this->getValue();
     }
 }
