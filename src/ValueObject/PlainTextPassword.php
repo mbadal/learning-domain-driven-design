@@ -22,7 +22,7 @@ class PlainTextPassword extends AbstractPassword
         );
     }
 
-    public function isEqual(PlainTextPassword $plainTextPassword): bool
+    public function isEqualToString($plainTextPassword): bool
     {
         return ($this->getValue() === $plainTextPassword->getValue());
     }
