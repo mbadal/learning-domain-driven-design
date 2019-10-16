@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace LearningDdd\ValueObject\Example1\ValueObject;
+namespace LearningDdd\ValueObject;
 
 use InvalidArgumentException;
 

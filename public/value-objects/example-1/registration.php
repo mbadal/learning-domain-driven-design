@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
-use LearningDdd\ValueObject\Example1\ValueObject\EmailAddress;
-use LearningDdd\ValueObject\Example1\ValueObject\PlainTextPassword;
+use LearningDdd\ValueObject\EmailAddress;
+use LearningDdd\ValueObject\PlainTextPassword;
 
 require '../../../vendor/autoload.php';
 

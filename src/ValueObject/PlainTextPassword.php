@@ -1,9 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace LearningDdd\ValueObject\Example1\ValueObject;
+namespace LearningDdd\ValueObject;
 
 use InvalidArgumentException;
-use ReflectionClass;
 
 class PlainTextPassword
 {
@@ -33,10 +32,11 @@ class PlainTextPassword
 
     public function isEqual(PlainTextPassword $plainTextPassword): bool
     {
-        $reflector = new ReflectionClass($plainTextPassword);
-        $property  = $reflector->getProperty('value');
-        $property->setAccessible(true);
+        return ($this->value === $plainTextPassword->getValue());
+    }
 
-        return ($this->value === $property->getValue($plainTextPassword));
+    private function getValue(): string
+    {
+        return $this->value;
     }
 }
