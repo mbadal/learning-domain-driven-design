@@ -2,7 +2,9 @@
 
 namespace LearningDdd\Repository;
 
+use LearningDdd\Entity\User;
 use LearningDdd\ValueObject\EmailAddress;
+use LearningDdd\ValueObject\PasswordHash;
 use LearningDdd\ValueObject\UserId;
 
 class UserRepository
@@ -13,7 +15,7 @@ class UserRepository
     {
         $allUsers                        = $this->getAllUsers();
         $foundUser                       = $this->findUserByEmail($userData['email']);
-        $userId                          = $foundUser === null ? UserId::createFromInt(count($allUsers) + 1): UserId::createFromInt((int)$foundUser['id']);
+        $userId                          = $foundUser === null ? UserId::createFromInt(count($allUsers) + 1) : $foundUser->getId();
         $allUsers[$userId->__toString()] = [
             'id'       => $userId->__toString(),
             'email'    => $userData['email']->__toString(),
@@ -25,14 +27,23 @@ class UserRepository
         return $userId;
     }
 
-    public function findUser(UserId $userId): ?array
+    public function findUser(UserId $userId): ?User
     {
         $allUsers = $this->getAllUsers();
+        if (!isset($allUsers[$userId->__toString()])) {
+            return null;
+        }
 
-        return $allUsers[$userId->__toString()] ?? null;
+        $userData = $allUsers[$userId->__toString()];
+
+        return new User(
+            UserId::createFromInt((int)$userData['id']),
+            EmailAddress::createFromString($userData['email']),
+            PasswordHash::createFromString($userData['password'])
+        );
     }
 
-    public function findUserByEmail(EmailAddress $email): ?array
+    public function findUserByEmail(EmailAddress $email): ?User
     {
         $filteredUser = array_filter($this->getAllUsers(), function ($item) use ($email) {
             return ($email->isEqualToString($item['email']));
@@ -42,13 +53,23 @@ class UserRepository
             return null;
         }
 
-        return current($filteredUser);
+        $userData = current($filteredUser);
+
+        return new User(
+            UserId::createFromInt((int)$userData['id']),
+            EmailAddress::createFromString($userData['email']),
+            PasswordHash::createFromString($userData['password'])
+        );
     }
 
-    public function updateUser(UserId $id, array $userData)
+    public function updateUser(UserId $id, User $user)
     {
         $allUsers                    = $this->getAllUsers();
-        $allUsers[$id->__toString()] = $userData;
+        $allUsers[$id->__toString()] = [
+            'id'       => $user->getId()->__toString(),
+            'email'    => $user->getEmail()->__toString(),
+            'password' => $user->getPassword()->__toString(),
+        ];
 
         $this->writeFileContents($allUsers);
     }

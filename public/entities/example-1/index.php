@@ -27,7 +27,7 @@ $userId3 = $repository->insertUser([
 
 
 $user1 = $repository->findUser($userId1);
-echo "User ID: [{$user1['id']}], email: [{$user1['email']}]\n";
+echo "User ID: [{$user1->getId()}], email: [{$user1->getEmail()}]\n";
 
 //-------------------------------------------------------------------------
 //@todo implement changing of user password
@@ -35,14 +35,12 @@ $user = $repository->findUserByEmail(
     EmailAddress::createFromString('test1@profesia.sk')
 );
 
-$password = PasswordHash::createFromString($user['password']);
-if (!$password->verify(PlainTextPassword::createFromString('test1'))) {
+if (!$user->getPassword()->verify(PlainTextPassword::createFromString('test1'))) {
     echo 'Authentication failed';
     exit;
 }
 
-$user['password'] = PlainTextPassword::createFromString('changed-password')->hash();
-$id               = UserId::createFromInt((int)$user['id']);
-$repository->updateUser($id, $user);
-echo "Updated user with ID: [{$id}]", "\n";
+$user->setPassword(PlainTextPassword::createFromString('changed-password')->hash());
+$repository->updateUser($user->getId(), $user);
+echo "Updated user with ID: [{$user->getId()}]", "\n";
 

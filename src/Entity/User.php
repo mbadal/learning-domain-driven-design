@@ -38,4 +38,14 @@ class User
     {
         return $this->password;
     }
+
+    public function setEmail(EmailAddress $email): void
+    {
+        $this->email = $email;
+    }
+
+    public function setPassword(PasswordHash $password): void
+    {
+        $this->password = $password;
+    }
 }
