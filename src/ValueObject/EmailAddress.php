@@ -23,6 +23,12 @@ class EmailAddress
         return new self($value);
     }
 
+    public function isEqualToString(string $email): bool
+    {
+
+        return ($this->value === $email);
+    }
+
     public function toString(): string
     {
         return $this->__toString();

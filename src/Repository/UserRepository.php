@@ -2,20 +2,22 @@
 
 namespace LearningDdd\Repository;
 
+use LearningDdd\ValueObject\EmailAddress;
 use LearningDdd\ValueObject\UserId;
 
 class UserRepository
 {
     private $filePath = '../../../users.json';
 
-    public function registerUser(array $userData): UserId
+    public function insertUser(array $userData): UserId
     {
         $allUsers                        = $this->getAllUsers();
-        $userId                          = UserId::createFromInt(count($allUsers) + 1);
+        $foundUser                       = $this->findUserByEmail($userData['email']);
+        $userId                          = $foundUser === null ? UserId::createFromInt(count($allUsers) + 1): UserId::createFromInt((int)$foundUser['id']);
         $allUsers[$userId->__toString()] = [
             'id'       => $userId->__toString(),
             'email'    => $userData['email']->__toString(),
-            'password' => $userData['password']->__toString()
+            'password' => $userData['password']->__toString(),
         ];
 
         $this->writeFileContents($allUsers);
@@ -30,9 +32,22 @@ class UserRepository
         return $allUsers[$userId->__toString()] ?? null;
     }
 
+    public function findUserByEmail(EmailAddress $email): ?array
+    {
+        $filteredUser = array_filter($this->getAllUsers(), function ($item) use ($email) {
+            return ($email->isEqualToString($item['email']));
+        });
+
+        if (empty($filteredUser)) {
+            return null;
+        }
+
+        return current($filteredUser);
+    }
+
     public function updateUser(UserId $id, array $userData)
     {
-        $allUsers = $this->getAllUsers();
+        $allUsers                    = $this->getAllUsers();
         $allUsers[$id->__toString()] = $userData;
 
         $this->writeFileContents($allUsers);
