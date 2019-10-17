@@ -11,15 +11,15 @@ class UserRepository
 {
     private $filePath = '../../../users.json';
 
-    public function insertUser(array $userData): UserId
+    public function insertUser(EmailAddress $emailAddress, PasswordHash $password): UserId
     {
         $allUsers                        = $this->getAllUsers();
-        $foundUser                       = $this->findUserByEmail($userData['email']);
+        $foundUser                       = $this->findUserByEmail($emailAddress);
         $userId                          = $foundUser === null ? UserId::createFromInt(count($allUsers) + 1) : $foundUser->getId();
         $allUsers[$userId->__toString()] = [
             'id'       => $userId->__toString(),
-            'email'    => $userData['email']->__toString(),
-            'password' => $userData['password']->__toString(),
+            'email'    => $emailAddress->__toString(),
+            'password' => $password->__toString(),
         ];
 
         $this->writeFileContents($allUsers);
@@ -36,7 +36,7 @@ class UserRepository
 
         $userData = $allUsers[$userId->__toString()];
 
-        return new User(
+        return User::loadUser(
             UserId::createFromInt((int)$userData['id']),
             EmailAddress::createFromString($userData['email']),
             PasswordHash::createFromString($userData['password'])
@@ -55,7 +55,7 @@ class UserRepository
 
         $userData = current($filteredUser);
 
-        return new User(
+        return User::loadUser(
             UserId::createFromInt((int)$userData['id']),
             EmailAddress::createFromString($userData['email']),
             PasswordHash::createFromString($userData['password'])
@@ -65,11 +65,7 @@ class UserRepository
     public function updateUser(UserId $id, User $user)
     {
         $allUsers                    = $this->getAllUsers();
-        $allUsers[$id->__toString()] = [
-            'id'       => $user->getId()->__toString(),
-            'email'    => $user->getEmail()->__toString(),
-            'password' => $user->getPassword()->__toString(),
-        ];
+        $allUsers[$id->__toString()] = $user->printUserData();
 
         $this->writeFileContents($allUsers);
     }

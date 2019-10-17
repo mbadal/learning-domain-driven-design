@@ -2,8 +2,10 @@
 
 namespace LearningDdd\Entity;
 
+use LearningDdd\Repository\UserRepository;
 use LearningDdd\ValueObject\EmailAddress;
 use LearningDdd\ValueObject\PasswordHash;
+use LearningDdd\ValueObject\PlainTextPassword;
 use LearningDdd\ValueObject\UserId;
 
 class User
@@ -17,11 +19,23 @@ class User
     /** @var PasswordHash */
     private $password;
 
-    public function __construct(UserId $id, EmailAddress $email, PasswordHash $password)
+    private function __construct(UserId $id, EmailAddress $email, PasswordHash $password)
     {
         $this->id       = $id;
         $this->email    = $email;
         $this->password = $password;
+    }
+
+    public static function registerUser(EmailAddress $email, PasswordHash $password, UserRepository $repository): User
+    {
+        $userId = $repository->insertUser($email, $password);
+
+        return new self($userId, $email, $password);
+    }
+
+    public static function loadUser(UserId $userId, $email, PasswordHash $password): User
+    {
+        return new self($userId, $email, $password);
     }
 
     public function getId(): UserId
@@ -29,23 +43,25 @@ class User
         return $this->id;
     }
 
-    public function getEmail(): EmailAddress
-    {
-        return $this->email;
-    }
-
-    public function getPassword(): PasswordHash
-    {
-        return $this->password;
-    }
-
-    public function setEmail(EmailAddress $email): void
-    {
-        $this->email = $email;
-    }
-
-    public function setPassword(PasswordHash $password): void
+    public function changePassword(PasswordHash $password, UserRepository $repository): User
     {
         $this->password = $password;
+        $repository->updateUser($this->id, $this);
+
+        return $this;
+    }
+
+    public function verify(PlainTextPassword $plainTextPassword): bool
+    {
+        return ($this->password->verify($plainTextPassword));
+    }
+
+    public function printUserData(): array
+    {
+        return [
+            'id'       => $this->id->__toString(),
+            'email'    => $this->email->__toString(),
+            'password' => $this->password->__toString(),
+        ];
     }
 }

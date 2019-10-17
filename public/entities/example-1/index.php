@@ -3,31 +3,34 @@
 use LearningDdd\Repository\UserRepository;
 use LearningDdd\ValueObject\EmailAddress;
 use LearningDdd\ValueObject\PlainTextPassword;
-use LearningDdd\ValueObject\PasswordHash;
-use LearningDdd\ValueObject\UserId;
+use LearningDdd\Entity\User;
 
 require '../../../vendor/autoload.php';
 
 $repository = new UserRepository();
 
-$userId1 = $repository->insertUser([
-    'email'    => EmailAddress::createFromString('test1@profesia.sk'),
-    'password' => (PlainTextPassword::createFromString('test1'))->hash(),
-]);
+$user1 = User::registerUser(
+    EmailAddress::createFromString('test1@profesia.sk'),
+    (PlainTextPassword::createFromString('test1'))->hash(),
+    $repository
+);
 
-$userId2 = $repository->insertUser([
-    'email'    => EmailAddress::createFromString('test2@profesia.sk'),
-    'password' => (PlainTextPassword::createFromString('test2'))->hash(),
-]);
+$user2 = User::registerUser(
+    EmailAddress::createFromString('test2@profesia.sk'),
+    (PlainTextPassword::createFromString('test2'))->hash(),
+    $repository
+);
 
-$userId3 = $repository->insertUser([
-    'email'    => EmailAddress::createFromString('test3@profesia.sk'),
-    'password' => (PlainTextPassword::createFromString('test3'))->hash(),
-]);
+$user3 = User::registerUser(
+    EmailAddress::createFromString('test3@profesia.sk'),
+    (PlainTextPassword::createFromString('test3'))->hash(),
+    $repository
+);
 
 
-$user1 = $repository->findUser($userId1);
-echo "User ID: [{$user1->getId()}], email: [{$user1->getEmail()}]\n";
+$user1 = $repository->findUser($user1->getId());
+$userData = $user1->printUserData();
+echo "User ID: [{$userData['id']}], email: [{$userData['email']}]\n";
 
 //-------------------------------------------------------------------------
 //@todo implement changing of user password
@@ -35,12 +38,11 @@ $user = $repository->findUserByEmail(
     EmailAddress::createFromString('test1@profesia.sk')
 );
 
-if (!$user->getPassword()->verify(PlainTextPassword::createFromString('test1'))) {
+if (!$user->verify(PlainTextPassword::createFromString('test1'))) {
     echo 'Authentication failed';
     exit;
 }
 
-$user->setPassword(PlainTextPassword::createFromString('changed-password')->hash());
-$repository->updateUser($user->getId(), $user);
+$user->changePassword(PlainTextPassword::createFromString('changed-password')->hash(), $repository);
 echo "Updated user with ID: [{$user->getId()}]", "\n";
 
