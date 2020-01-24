@@ -37,5 +37,6 @@ $usersArray[] = [
     'email' => $email,
     'password' => password_hash($password, PASSWORD_DEFAULT)
 ];
+file_put_contents('users.json', json_encode($usersArray));
 echo 'Successfully registered';
 exit;

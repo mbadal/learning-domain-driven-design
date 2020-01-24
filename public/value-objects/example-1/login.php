@@ -31,7 +31,7 @@ if (sizeof($users) === 0) {
     exit;
 }
 
-$user = $users[0];
+$user = current($users);
 if (!password_verify($password, $user['password'])) {
     echo('Invalid Password');
     exit;
