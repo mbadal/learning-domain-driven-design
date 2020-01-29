@@ -9,14 +9,14 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     exit;
 }
 
-$passwordLength = strlen($password);
-if (0 === $passwordLength || $passwordLength < 6) {
-    echo 'Password should be at least 6 characters long';
+if ($password !== $passwordRepeat) {
+    echo 'Passwords do not match';
     exit;
 }
 
-if ($password !== $passwordRepeat) {
-    echo 'Passwords do not match';
+$passwordLength = strlen($password);
+if (0 === $passwordLength || $passwordLength < 6) {
+    echo 'Password should be at least 6 characters long';
     exit;
 }
 
