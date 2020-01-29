@@ -23,9 +23,14 @@ class EmailAddress
         return new self($value);
     }
 
+    public function isEqualToString(string $stringToCompare): bool
+    {
+        return $this->value === $stringToCompare;
+    }
+
     public function toString(): string
     {
-        return (string)$this;
+        return $this->__toString();
     }
 
     public function __toString(): string

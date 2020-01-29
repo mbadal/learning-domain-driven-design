@@ -4,16 +4,8 @@ namespace LearningDdd\Example1\ValueObject;
 
 use InvalidArgumentException;
 
-class PasswordHash
+class PasswordHash extends PasswordAbstract
 {
-    /** @var string */
-    private $value;
-
-    private function __construct(string $value)
-    {
-        $this->value = $value;
-    }
-
     public static function createFromHashedString(string $value): PasswordHash
     {
         if (strpos($value, '$2y$') !== 0) {
@@ -23,18 +15,21 @@ class PasswordHash
         return new self($value);
     }
 
-    public function verify(): bool
+    public function verify(PlainTextPassword $plainTextPassword): bool
     {
-
+        return password_verify(
+            $plainTextPassword->getValue(),
+            $this->getValue()
+        );
     }
 
     public function toString(): string
     {
-        return (string)$this;
+        return $this->__toString();
     }
 
     public function __toString(): string
     {
-        return $this->value;
+        return $this->getValue();
     }
 }

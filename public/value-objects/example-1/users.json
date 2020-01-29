@@ -1,7 +1,1 @@
-[
-	{
-		"id": 1,
-		"email": "test@profesia.sk",
-		"password": "$2y$10$z.4CTKQtmt3OkMLSQlSeaOv346Pq4U9B2X8agoiA1k9BVgPorlQRG"
-	}
-]
+[{"id":1,"email":"test@profesia.sk","password":"$2y$10$z.4CTKQtmt3OkMLSQlSeaOv346Pq4U9B2X8agoiA1k9BVgPorlQRG"},{"id":1,"email":"test@test.sk","password":"$2y$10$cgZplWvSdhe8zXPdGgYYhuboTsMwZu.MAtqz5kMMkEGcuYnKyloGa"},{"id":2,"email":"test@abcd.sk","password":"$2y$10$27qry6IOGGxmQ00JnlDfLOW9rMGxFxcBcsi0s8J0G5a2jKmk4IMFq"}]
