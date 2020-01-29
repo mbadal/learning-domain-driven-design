@@ -14,6 +14,12 @@ if ($password !== $passwordRepeat) {
     exit;
 }
 
+$passwordLength = strlen($password);
+if (0 === $passwordLength || $passwordLength < 6) {
+    echo 'Password should be at least 6 characters long';
+    exit;
+}
+
 $usersJson  = file_get_contents('users.json');
 $usersArray = json_decode($usersJson, true);
 
