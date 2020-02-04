@@ -18,9 +18,11 @@ class BankAccount
 
     public static function createEurAccount(float $amount)
     {
-        return Money::createFromAmountAndCurrency(
-            Amount::createFromFloat($amount),
-            Currency::createEurCurrency()
+        return new self(
+            Money::createFromAmountAndCurrency(
+                Amount::createFromFloat($amount),
+                Currency::createEurCurrency()
+            )
         );
     }
 

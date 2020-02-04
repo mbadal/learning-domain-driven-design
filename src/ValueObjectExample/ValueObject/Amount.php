@@ -2,8 +2,6 @@
 
 namespace LearningDdd\ValueObjectExample\ValueObject;
 
-use InvalidArgumentException;
-
 class Amount
 {
     /** @var float */
