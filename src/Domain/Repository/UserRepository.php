@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace LearningDdd\Repository;
+namespace LearningDdd\Repository\Domain;
 
 use LearningDdd\ValueObject\EmailAddress;
 use LearningDdd\ValueObject\UserId;

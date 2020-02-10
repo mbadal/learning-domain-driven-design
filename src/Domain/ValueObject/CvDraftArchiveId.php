@@ -1,10 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace LearningDdd\ValueObject;
+
+namespace LearningDdd\ValueObject\Domain;
 
 use InvalidArgumentException;
 
-class UserId
+class CvDraftArchiveId
 {
     /** @var int */
     private $value;
@@ -14,7 +15,7 @@ class UserId
         $this->value = $value;
     }
 
-    public static function createFromInt(int $value): UserId
+    public static function createFromInt(int $value): self
     {
         if ($value <= 0) {
             throw new InvalidArgumentException("Argument: [{$value}] has to be greater than 0");
