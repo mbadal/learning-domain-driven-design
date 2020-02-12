@@ -9,7 +9,7 @@ use LearningDdd\ValueObject\UserId;
 
 class UserRepository
 {
-    private $filePath = '../../../users.json';
+    private $filePath = __DIR__ . '/../../users.json';
 
     public function insertUser(array $userData): UserId
     {

@@ -6,7 +6,7 @@ use LearningDdd\ValueObject\PlainTextPassword;
 use LearningDdd\ValueObject\PasswordHash;
 use LearningDdd\ValueObject\UserId;
 
-require '../../../vendor/autoload.php';
+require __DIR__ . '/../../../vendor/autoload.php';
 
 $repository = new UserRepository();
 
@@ -36,11 +36,18 @@ $user = $repository->findUserByEmail(
 );
 
 if (!$user->getPassword()->verify(PlainTextPassword::createFromString('test1'))) {
-    echo 'Authentication failed';
+    echo 'Authentication failed 1';
     exit;
 }
 
 $user->setPassword(PlainTextPassword::createFromString('changed-password')->hash());
 $repository->updateUser($user->getId(), $user);
 echo "Updated user with ID: [{$user->getId()}]", "\n";
+
+if (!$user->getPassword()->verify(PlainTextPassword::createFromString('changed-password'))) {
+    echo 'Authentication failed 2';
+    exit;
+}
+
+echo 'Auth 2 OK', "\n";
 
