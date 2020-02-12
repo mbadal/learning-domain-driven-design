@@ -23,9 +23,13 @@ class EmailAddress
         return new self($value);
     }
 
+    public function isEqual(EmailAddress $emailAddress): bool
+    {
+        return ($this->value === $emailAddress->getValue());
+    }
+
     public function isEqualToString(string $email): bool
     {
-
         return ($this->value === $email);
     }
 
@@ -35,6 +39,11 @@ class EmailAddress
     }
 
     public function __toString()
+    {
+        return $this->value;
+    }
+
+    private function getValue(): string
     {
         return $this->value;
     }

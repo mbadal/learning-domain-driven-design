@@ -18,10 +18,10 @@ class UserRepository
         $userId                          = $foundUser === null ? UserId::createFromInt(
             count($allUsers) + 1
         ) : $foundUser->getId();
-        $allUsers[$userId->__toString()] = [
-            'id'       => $userId->__toString(),
-            'email'    => $emailAddress->__toString(),
-            'password' => $password->__toString(),
+        $allUsers[(string)$userId] = [
+            'id'       => (string)$userId,
+            'email'    => (string)$emailAddress,
+            'password' => (string)$password,
         ];
 
         $this->writeFileContents($allUsers);
@@ -50,7 +50,9 @@ class UserRepository
         $filteredUser = array_filter(
             $this->getAllUsers(),
             function ($item) use ($email) {
-                return ($email->isEqualToString($item['email']));
+                return ($email->isEqual(
+                    EmailAddress::createFromString($item['email'])
+                ));
             }
         );
 
