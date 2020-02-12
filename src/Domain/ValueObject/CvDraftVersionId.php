@@ -6,7 +6,7 @@ namespace LearningDdd\ValueObject\Domain;
 use InvalidArgumentException;
 
 
-class CvDraftChangeLogId
+class CvDraftVersionId
 {
     /** @var int */
     private $value;
