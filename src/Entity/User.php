@@ -46,7 +46,7 @@ class User
     public function changePassword(PasswordHash $password, UserRepository $repository): User
     {
         $this->password = $password;
-        $repository->updateUser($this->id, $this);
+        $repository->updateUserPassword($this->id, $this->password);
 
         return $this;
     }
@@ -59,9 +59,9 @@ class User
     public function printUserData(): array
     {
         return [
-            'id'       => $this->id->__toString(),
-            'email'    => $this->email->__toString(),
-            'password' => $this->password->__toString(),
+            'id'       => (string)$this->id,
+            'email'    => (string)$this->email,
+            'password' => (string)$this->password,
         ];
     }
 }

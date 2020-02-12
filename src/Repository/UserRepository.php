@@ -9,13 +9,15 @@ use LearningDdd\ValueObject\UserId;
 
 class UserRepository
 {
-    private $filePath = '../../../users.json';
+    private $filePath = __DIR__ . '/../../users.json';
 
     public function insertUser(EmailAddress $emailAddress, PasswordHash $password): UserId
     {
         $allUsers                        = $this->getAllUsers();
         $foundUser                       = $this->findUserByEmail($emailAddress);
-        $userId                          = $foundUser === null ? UserId::createFromInt(count($allUsers) + 1) : $foundUser->getId();
+        $userId                          = $foundUser === null ? UserId::createFromInt(
+            count($allUsers) + 1
+        ) : $foundUser->getId();
         $allUsers[$userId->__toString()] = [
             'id'       => $userId->__toString(),
             'email'    => $emailAddress->__toString(),
@@ -45,9 +47,12 @@ class UserRepository
 
     public function findUserByEmail(EmailAddress $email): ?User
     {
-        $filteredUser = array_filter($this->getAllUsers(), function ($item) use ($email) {
-            return ($email->isEqualToString($item['email']));
-        });
+        $filteredUser = array_filter(
+            $this->getAllUsers(),
+            function ($item) use ($email) {
+                return ($email->isEqualToString($item['email']));
+            }
+        );
 
         if (empty($filteredUser)) {
             return null;
@@ -62,12 +67,19 @@ class UserRepository
         );
     }
 
-    public function updateUser(UserId $id, User $user)
+    public function updateUserPassword(UserId $userId, PasswordHash $hash): int
     {
-        $allUsers                    = $this->getAllUsers();
-        $allUsers[$id->__toString()] = $user->printUserData();
+        $allUsers = $this->getAllUsers();
+        if (!isset($allUsers[(string)$userId])) {
+            return 0;
+        }
+
+        $user                      = $allUsers[(string)$userId];
+        $allUsers[(string)$userId] = array_merge($user, ['password' => (string)$hash]);
 
         $this->writeFileContents($allUsers);
+
+        return 1;
     }
 
     public function listAllUsers(): array
